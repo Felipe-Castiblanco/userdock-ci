@@ -1,0 +1,57 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_usercrud
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - usercrud-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: php_backend
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASS: ${MYSQL_PASSWORD}
+    ports:
+      - "${BACKEND_PORT:-8081}:80"
+    volumes:
+      - ./backend:/var/www/html:rw
+    networks:
+      - usercrud-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_static
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    environment:
+      REACT_APP_API_URL: "http://backend"
+    networks:
+      - usercrud-net
+
+volumes:
+  db_data:
+
+networks:
+  usercrud-net:
+    driver: bridge
