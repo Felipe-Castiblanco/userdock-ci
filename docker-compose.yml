@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   db:
     image: mysql:8.0
@@ -29,7 +31,7 @@ services:
       DB_USER: ${MYSQL_USER}
       DB_PASS: ${MYSQL_PASSWORD}
     ports:
-      - "${BACKEND_PORT:-8081}:80"
+      - "${BACKEND_PORT}:80"
     volumes:
       - ./backend:/var/www/html:rw
     networks:
@@ -43,32 +45,15 @@ services:
     depends_on:
       - backend
     ports:
-      - "${FRONTEND_PORT:-8080}:80"
+      - "${FRONTEND_PORT}:80"
     environment:
-      REACT_APP_API_URL: "http://backend"
-    networks:
-      - usercrud-net
-
-  summary:
-    image: alpine:latest
-    container_name: build_summary
-    depends_on:
-      - backend
-      - frontend
-    volumes:
-      - ./show_summary.sh:/show_summary.sh
-    entrypoint: [ "/bin/sh", "/show_summary.sh" ]
-    tty: true
-    env_file:
-      - ./.env
+      API_URL: "http://backend:80/api"
     networks:
       - usercrud-net
 
 volumes:
   db_data:
 
-
 networks:
   usercrud-net:
     driver: bridge
-

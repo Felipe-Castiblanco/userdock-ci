@@ -1,6 +1,6 @@
 class UserManager {
     constructor() {
-        this.API_URL = 'http://localhost:8080/api';
+        this.API_URL = window.API_URL || 'http://localhost:8080/api';
         this.init();
     }
 
