@@ -57,7 +57,7 @@ Asegúrate de tener instaladas las siguientes herramientas antes de comenzar:
 
 ```bash
 git clone https://github.com/JohanFarfan25/userdock-ci
-cd usercrud-docker
+cd userdock-ci
 ```
 
 ### 2️⃣ Configurar variables de entorno
