@@ -49,9 +49,26 @@ services:
     networks:
       - usercrud-net
 
+  summary:
+    image: alpine:latest
+    container_name: build_summary
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./show_summary.sh:/show_summary.sh
+    entrypoint: [ "/bin/sh", "/show_summary.sh" ]
+    tty: true
+    env_file:
+      - ./.env
+    networks:
+      - usercrud-net
+
 volumes:
   db_data:
+
 
 networks:
   usercrud-net:
     driver: bridge
+
