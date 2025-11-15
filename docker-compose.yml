@@ -51,8 +51,24 @@ services:
     networks:
       - usercrud-net
 
+  jenkins:
+    image: jenkins/jenkins:lts
+    user: root
+    ports:
+      - "${JENKINS_PORT}:8080"
+      - "5000:5000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    container_name: ci_jenkins
+    networks:
+      - usercrud-net
+
 volumes:
   db_data:
+  jenkins_home:
 
 networks:
   usercrud-net:
